@@ -8,11 +8,6 @@ use Illuminate\Support\Facades\Auth;
 
 class TaskController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('auth:api')->except(['index', 'show']);
-    }
-
     public function index()
     {
         $tasks = Task::all();
@@ -38,7 +33,7 @@ class TaskController extends Controller
         $task = Task::create([
             'title' => $request->title,
             'description' => $request->description,
-            'user_id' => Auth::id(), // Associate the task with the authenticated user
+            'user_id' => Auth::id(),
         ]);
 
         return response()->json(['task' => $task], 201);
@@ -56,7 +51,6 @@ class TaskController extends Controller
             return response()->json(['message' => 'Task not found'], 404);
         }
 
-        // Check if the authenticated user owns the task
         if ($task->user_id !== Auth::id()) {
             return response()->json(['message' => 'Unauthorized'], 401);
         }
@@ -72,7 +66,6 @@ class TaskController extends Controller
             return response()->json(['message' => 'Task not found'], 404);
         }
 
-        // Check if the authenticated user owns the task
         if ($task->user_id !== Auth::id()) {
             return response()->json(['message' => 'Unauthorized'], 401);
         }
